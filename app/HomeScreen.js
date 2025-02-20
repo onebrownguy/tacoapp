@@ -1,7 +1,8 @@
+import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   const router = useRouter();
 
   return (
@@ -10,7 +11,7 @@ export default function HomeScreen() {
       <Button title="View Menu" onPress={() => router.push('/menu')} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -25,3 +26,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
+export default HomeScreen;
