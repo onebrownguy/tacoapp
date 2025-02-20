@@ -19,12 +19,12 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-          },
+          ios: { position: 'absolute' },
           default: {},
         }),
       }}>
+      
+      {/* ✅ Home Screen */}
       <Tabs.Screen
         name="index"
         options={{
@@ -32,6 +32,17 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
+
+      {/* ✅ Cart Screen */}
+      <Tabs.Screen
+        name="cart"
+        options={{
+          title: 'Cart',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="cart.fill" color={color} />,
+        }}
+      />
+
+      {/* ✅ Explore Screen */}
       <Tabs.Screen
         name="explore"
         options={{
@@ -39,6 +50,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
+
+      {/* ✅ Contact Screen */}
       <Tabs.Screen
         name="contact"
         options={{
@@ -49,5 +62,3 @@ export default function TabLayout() {
     </Tabs>
   );
 }
-
-
