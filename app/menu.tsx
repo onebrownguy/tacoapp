@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { useCart } from './context/CartContext'; // ✅ Import cart context
+import { useCart } from '@/app/context/CartContext'; 
 import { useRouter } from 'expo-router';
 
 const menuItems = [
@@ -15,8 +15,6 @@ const menuItems = [
   { id: '10', name: 'Mushroom Taco', price: 3.75, description: 'Earthy, umami-packed mushrooms, sautéed to perfection, crowned with crumbled queso fresco.' },
 ];
 
-
-
 export default function MenuScreen() {
   const router = useRouter();
   const { addToCart } = useCart(); // ✅ Get cart context function
@@ -29,22 +27,20 @@ export default function MenuScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <View style={styles.itemDetails}>
+            <View style={styles.textContainer}> {/* ✅ Text is properly aligned */}
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.description}>{item.description}</Text> {/* ✅ Show the elegant description */}
+              <Text style={styles.description}>{item.description}</Text>
               <Text style={styles.price}>${item.price.toFixed(2)}</Text>
             </View>
             <TouchableOpacity
               style={styles.button}
               onPress={() => addToCart({ id: item.id, name: item.name, quantity: 1 })}
             >
-              <Text style={styles.buttonText}>➕ Add to Cart</Text>
+              <Text style={styles.buttonText}>➕</Text>
             </TouchableOpacity>
           </View>
         )}
       />
-
-
       <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
         <Text style={styles.buttonText}>🏠 Back to Home</Text>
       </TouchableOpacity>
@@ -65,12 +61,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   item: {
-    flexDirection: 'row',
+    flexDirection: 'row', // ✅ Keeps row layout for larger screens
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+    flexWrap: 'wrap', // ✅ Ensures text wraps properly
+  },
+  textContainer: { // ✅ New container for text elements
+    flex: 1, // ✅ Takes up available space
+    marginRight: 10, // ✅ Adds spacing between text and button
   },
   name: {
     fontSize: 18,
@@ -78,20 +79,27 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    fontStyle: 'italic', 
-    color: '#7B7B7B', 
-    marginTop: 2,
-    lineHeight: 20, 
+    fontStyle: 'italic', // ✅ Michelin-style italics
+    color: '#7B7B7B',
+    lineHeight: 20, // ✅ Improved readability
   },
-  
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'green',
+    marginTop: 2,
+  },
   button: {
     backgroundColor: '#FF5733',
-    padding: 8,
+    padding: 12,
     borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 40, // ✅ Ensures button doesn’t shrink too much
   },
   buttonText: {
     color: '#FFF',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   backButton: {
@@ -101,11 +109,4 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
-  price: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#27AE60', // Green color for better visibility
-    marginTop: 2,
-  },
-
 });
