@@ -2,11 +2,17 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import { useCart } from './context/CartContext'; // ✅ Import cart context
 import { useRouter } from 'expo-router';
 
-const tacoMenu = [
-  { id: '1', name: 'Al Pastor', description: 'Marinated pork with pineapple' },
-  { id: '2', name: 'Carne Asada', description: 'Grilled steak with salsa' },
-  { id: '3', name: 'Pollo', description: 'Grilled chicken with onions & cilantro' },
-  { id: '4', name: 'Veggie', description: 'Grilled vegetables with guacamole' },
+const menuItems = [
+  { id: '1', name: 'Al Pastor Taco', price: 3.50 },
+  { id: '2', name: 'Carne Asada Taco', price: 4.00 },
+  { id: '3', name: 'Pollo Taco (Chicken)', price: 3.75 },
+  { id: '4', name: 'Barbacoa Taco', price: 4.25 },
+  { id: '5', name: 'Vegetarian Taco', price: 3.50 },
+  { id: '6', name: 'Chorizo Taco', price: 4.00 },
+  { id: '7', name: 'Fish Taco', price: 4.50 },
+  { id: '8', name: 'Shrimp Taco', price: 4.75 },
+  { id: '9', name: 'Birria Taco', price: 4.50 },
+  { id: '10', name: 'Mushroom Taco', price: 3.75 },
 ];
 
 export default function MenuScreen() {
@@ -17,7 +23,7 @@ export default function MenuScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>🌮 Taco Menu 🌮</Text>
       <FlatList
-        data={tacoMenu}
+        data={menuItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
