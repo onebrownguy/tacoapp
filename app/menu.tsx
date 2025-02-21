@@ -29,7 +29,7 @@ export default function MenuScreen() {
           <View style={styles.item}>
             <View>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.price}>${item.price.toFixed(2)}</Text> {/* ✅ Add this line */}
             </View>
             <TouchableOpacity
               style={styles.button}
@@ -40,6 +40,7 @@ export default function MenuScreen() {
           </View>
         )}
       />
+
       <TouchableOpacity style={styles.backButton} onPress={() => router.push('/')}>
         <Text style={styles.buttonText}>🏠 Back to Home</Text>
       </TouchableOpacity>
@@ -92,4 +93,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
+  price: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#27AE60', // Green color for better visibility
+    marginTop: 2,
+  },
+  
 });
