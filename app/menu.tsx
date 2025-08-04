@@ -1,6 +1,7 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { useCart } from '@/app/context/CartContext'; 
 import { useRouter } from 'expo-router';
+import { useState, useMemo } from 'react';
 
 const menuItems = [
   { id: '1', name: 'Al Pastor Taco', price: 3.50, description: 'Succulent marinated pork, slow-roasted to perfection, complemented by a touch of caramelized pineapple.' },
@@ -15,26 +16,98 @@ const menuItems = [
   { id: '10', name: 'Mushroom Taco', price: 3.75, description: 'Earthy, umami-packed mushrooms, sautéed to perfection, crowned with crumbled queso fresco.' },
 ];
 
+const categories = ['All', 'Meat', 'Seafood', 'Vegetarian'];
+
 export default function MenuScreen() {
   const router = useRouter();
-  const { addToCart } = useCart(); // ✅ Get cart context function
+  const { addToCart } = useCart();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const filteredItems = useMemo(() => {
+    let filtered = menuItems;
+
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by category
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(item => {
+        if (selectedCategory === 'Meat') {
+          return ['Al Pastor', 'Carne Asada', 'Pollo', 'Barbacoa', 'Chorizo', 'Birria'].some(meat => 
+            item.name.includes(meat)
+          );
+        }
+        if (selectedCategory === 'Seafood') {
+          return item.name.includes('Fish') || item.name.includes('Shrimp');
+        }
+        if (selectedCategory === 'Vegetarian') {
+          return item.name.includes('Vegetarian') || item.name.includes('Mushroom');
+        }
+        return true;
+      });
+    }
+
+    return filtered;
+  }, [searchQuery, selectedCategory]); // ✅ Get cart context function
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🌮 Taco Menu 🌮</Text>
+      
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search tacos..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoryContainer}
+      >
+        {categories.map((category) => (
+          <TouchableOpacity
+            key={category}
+            style={[
+              styles.categoryButton,
+              selectedCategory === category && styles.categoryButtonActive
+            ]}
+            onPress={() => setSelectedCategory(category)}
+          >
+            <Text style={[
+              styles.categoryText,
+              selectedCategory === category && styles.categoryTextActive
+            ]}>
+              {category}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      <Text style={styles.resultsText}>
+        {filteredItems.length} taco{filteredItems.length !== 1 ? 's' : ''} found
+      </Text>
+
       <FlatList
-        data={menuItems}
+        data={filteredItems}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <View style={styles.textContainer}> {/* ✅ Text is properly aligned */}
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.description}>{item.description}</Text>
-              <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-            </View>
+              <Text style={styles.price}>{`$${item.price.toFixed(2)}`}</Text>
+              </View>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => addToCart({ id: item.id, name: item.name, quantity: 1 })}
+              onPress={() => addToCart({ id: item.id, name: item.name, price: item.price })}
             >
               <Text style={styles.buttonText}>➕</Text>
             </TouchableOpacity>
@@ -101,6 +174,43 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  searchInput: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderRadius: 8,
+    fontSize: 16,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  categoryContainer: {
+    marginBottom: 15,
+  },
+  categoryButton: {
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  categoryButtonActive: {
+    backgroundColor: '#007AFF',
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  categoryTextActive: {
+    color: '#fff',
+  },
+  resultsText: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 15,
+    fontStyle: 'italic',
   },
   backButton: {
     marginTop: 20,
